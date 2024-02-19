@@ -19,7 +19,18 @@ namespace set_realization {
 		public:
 			Set() : _root(nullptr), _size(0) {}
 			Set(const Set& other) {
+				_root = copyTree(other._root);
+			}
+			Node<T>* copyTree(Node<T>* root) {
+				if (!root) {
+					return nullptr;
+				}
 
+				Node<T>* newNode = new Node<T>(root->_val);
+				newNode->_left = copyTree(root->_left);
+				newNode->_right = copyTree(root->_right);
+
+				return newNode;
 			}
 			bool insert(const int& val) {
 				Node<T>* newNode = new Node<T>(val);
@@ -29,7 +40,7 @@ namespace set_realization {
 				}
 				Node<T>* cur = _root;
 				Node<T>* ptr = nullptr;
-				while (cur != nullptr)
+				while (cur)
 				{
 					ptr = cur;
 					if (val < cur->_val) {
@@ -52,10 +63,29 @@ namespace set_realization {
 				}
 				return true;
 			}
-			void print() const {
+			void print() {
 				if (_root) {
 					recursion(_root);
 				}
+				std::cout << std::endl;
+			}
+			bool contains(const int& val) {
+				if (!_root) {
+					return false;
+				}
+				Node<T>* cur = _root;
+				while (cur) {
+					if (cur->_val == val) {
+						return true;
+					}
+					else if(cur->_val<val) {
+						cur = cur->_right;
+					}
+					else if (cur->_val > val) {
+						cur = cur->_left;
+					}
+				}
+				return false;
 			}
 			void recursion(Node<T>* root) {
 				if (!root) {

@@ -14,5 +14,6 @@ int main() {
 	a.insert(4);
 	a.insert(8);
 	a.print();
+	cout << a.contains(5) << " " << a.contains(4) << " " << a.contains(12) << endl;
 	return 0;
 }
