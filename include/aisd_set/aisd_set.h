@@ -26,16 +26,19 @@ namespace set_realization {
 					return nullptr;
 				}
 
-				Node<T>* newNode = new Node<T>(root->_val);
-				newNode->_left = copyTree(root->_left);
-				newNode->_right = copyTree(root->_right);
+				Node<T>* new_node = new Node<T>(root->_val);
+				new_node->_left = copyTree(root->_left);
+				new_node->_right = copyTree(root->_right);
 
-				return newNode;
+				return new_node;
+			}
+			Node<T>* get_root() const {
+				return _root;
 			}
 			bool insert(const int& val) {
-				Node<T>* newNode = new Node<T>(val);
+				Node<T>* new_node = new Node<T>(val);
 				if (!_root) {
-					_root = newNode;
+					_root = new_node;
 					return true;
 				}
 				Node<T>* cur = _root;
@@ -51,15 +54,15 @@ namespace set_realization {
 
 					}
 					else {
-						delete newNode;
+						delete new_node;
 						return false;
 					}
 				}
 				if (val < ptr->_val) {
-					ptr->_left = newNode;
+					ptr->_left = new_node;
 				}
 				else {
-					ptr->_right = newNode;
+					ptr->_right = new_node;
 				}
 				return true;
 			}
@@ -95,6 +98,50 @@ namespace set_realization {
 				std::cout << root->_val << ' ';
 				recursion(root->_right);
 			}
-			
+			bool erase(const int& val) {
+				return erase_with_root(_root, val);
+			}
+			bool erase_with_root(Node<T>*& root, const int& val) {
+				if (!root) {
+					return false;
+				}
+
+				if (root->_val > val) {
+					return erase_with_root(root->_left, val);
+				}
+				else if (root->_val < val) {
+					return erase_with_root(root->_right, val);
+				}
+
+				if (!root->_left) {
+					Node<T>* temp = root->_right;
+					delete root;
+					root = temp;
+					return true;
+				}
+				else if(!root->_right) {
+					Node<T>* temp = root->_left;
+					delete root;
+					root = temp;
+					return true;
+				}
+				else {
+					Node<T>* succParent = root;
+					Node<T>* succ = root->_right;
+					while (succ->_left != NULL) {
+						succParent = succ;
+						succ = succ->_left;
+					}
+					if (succParent != root)
+						succParent->_left = succ->_right;
+					else
+						succParent->_right = succ->_right;
+
+					root->_val = succ->_val;
+
+					delete succ;
+					return true;
+				}
+			}
 	};
 }
