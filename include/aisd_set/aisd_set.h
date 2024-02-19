@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <random>
 
 namespace set_realization {
 	template <typename T>
@@ -19,16 +20,31 @@ namespace set_realization {
 		public:
 			Set() : _root(nullptr), _size(0) {}
 			Set(const Set& other) {
-				_root = copyTree(other._root);
+				_root = create_copy_tree(other._root);
 			}
-			Node<T>* copyTree(Node<T>* root) {
+			~Set() {
+				clear(_root);
+			}
+			Set& operator = (const Set& other){
+				clear(_root);
+				_root = create_copy_tree(other._root);
+			}
+			void clear(Node<T>* head) {
+				if (!head) {
+					return;
+				}
+				clear(head->_left);
+				clear(head->_right);
+				delete head;
+			}
+			Node<T>* create_copy_tree(Node<T>* root) {
 				if (!root) {
 					return nullptr;
 				}
 
 				Node<T>* new_node = new Node<T>(root->_val);
-				new_node->_left = copyTree(root->_left);
-				new_node->_right = copyTree(root->_right);
+				new_node->_left = create_copy_tree(root->_left);
+				new_node->_right = create_copy_tree(root->_right);
 
 				return new_node;
 			}
@@ -144,4 +160,12 @@ namespace set_realization {
 				}
 			}
 	};
+
+	std::vector<int> random(int a, int b, size_t n, size_t i) {
+		std::mt19937 gen(i);
+		std::uniform_int_distribution<> distribution(a, b);
+		for (size_t j = 0; j < n; j++) {
+
+		}
+	}
 }
