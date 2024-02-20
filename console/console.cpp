@@ -375,5 +375,7 @@ int main() {
 	//}
 	//cout << "Average time, 1000 nums: " << time_count / 1000 << " seconds" << endl;
 	//Average time, 1000 nums: 0.00033017 seconds
+	vector<int> a = { 3, 2, 2, 4 };
+	function(a);
 	return 0;
 }

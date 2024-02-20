@@ -16,27 +16,8 @@ namespace set_realization {
 	class Set {
 	private:
 		Node<T>* _root;
-		size_t _size;
-	public:
-		Set() : _root(nullptr), _size(0) {}
-		Set(const Set& other) {
-			_root = create_copy_tree(other._root);
-		}
-		~Set() {
-			clear(_root);
-		}
-		Set& operator = (const Set& other) {
-			clear(_root);
-			_root = create_copy_tree(other._root);
-		}
-		void clear(Node<T>* head) {
-			if (!head) {
-				return;
-			}
-			clear(head->_left);
-			clear(head->_right);
-			delete head;
-		}
+
+
 		Node<T>* create_copy_tree(Node<T>* root) {
 			if (!root) {
 				return nullptr;
@@ -47,6 +28,84 @@ namespace set_realization {
 			new_node->_right = create_copy_tree(root->_right);
 
 			return new_node;
+		}
+
+		void clear(Node<T>* head) {
+			if (!head) {
+				return;
+			}
+			clear(head->_left);
+			clear(head->_right);
+			delete head;
+		}
+
+		void recursion(Node<T>* root) {
+			if (!root) {
+				return;
+			}
+			recursion(root->_left);
+			std::cout << root->_val << ' ';
+			recursion(root->_right);
+		}
+
+		bool erase_with_root(Node<T>*& root, const int& val) {
+			if (!root) {
+				return false;
+			}
+
+			if (root->_val > val) {
+				return erase_with_root(root->_left, val);
+			}
+			else if (root->_val < val) {
+				return erase_with_root(root->_right, val);
+			}
+
+			if (!root->_left) {
+				Node<T>* temp = root->_right;
+				delete root;
+				root = temp;
+				return true;
+			}
+			else if (!root->_right) {
+				Node<T>* temp = root->_left;
+				delete root;
+				root = temp;
+				return true;
+			}
+			else {
+				Node<T>* succParent = root;
+				Node<T>* succ = root->_right;
+				while (succ->_left != NULL) {
+					succParent = succ;
+					succ = succ->_left;
+				}
+				if (succParent != root)
+					succParent->_left = succ->_right;
+				else
+					succParent->_right = succ->_right;
+
+				root->_val = succ->_val;
+
+				delete succ;
+				return true;
+			}
+		}
+	public:
+		Set() : _root(nullptr) {}
+		Set(std::vector<T> data) : _root(nullptr) {
+			for (const auto& el : data) {
+				insert(el);
+			}
+		}
+		Set(const Set& other) {
+			_root = create_copy_tree(other._root);
+		}
+		~Set() {
+			clear(_root);
+		}
+		Set& operator = (Set other) {
+			std::swap(_root, other._root);
+			return *this;
 		}
 		Node<T>* get_root() const {
 			return _root;
@@ -106,58 +165,8 @@ namespace set_realization {
 			}
 			return false;
 		}
-		void recursion(Node<T>* root) {
-			if (!root) {
-				return;
-			}
-			recursion(root->_left);
-			std::cout << root->_val << ' ';
-			recursion(root->_right);
-		}
 		bool erase(const int& val) {
 			return erase_with_root(_root, val);
-		}
-		bool erase_with_root(Node<T>*& root, const int& val) {
-			if (!root) {
-				return false;
-			}
-
-			if (root->_val > val) {
-				return erase_with_root(root->_left, val);
-			}
-			else if (root->_val < val) {
-				return erase_with_root(root->_right, val);
-			}
-
-			if (!root->_left) {
-				Node<T>* temp = root->_right;
-				delete root;
-				root = temp;
-				return true;
-			}
-			else if (!root->_right) {
-				Node<T>* temp = root->_left;
-				delete root;
-				root = temp;
-				return true;
-			}
-			else {
-				Node<T>* succParent = root;
-				Node<T>* succ = root->_right;
-				while (succ->_left != NULL) {
-					succParent = succ;
-					succ = succ->_left;
-				}
-				if (succParent != root)
-					succParent->_left = succ->_right;
-				else
-					succParent->_right = succ->_right;
-
-				root->_val = succ->_val;
-
-				delete succ;
-				return true;
-			}
 		}
 	};
 
@@ -176,5 +185,15 @@ namespace set_realization {
 		std::mt19937 gen(i);
 		std::uniform_int_distribution<> distribution(a, b);
 		return distribution(gen);
+	}
+
+	std::vector<int> function(std::vector<int> a) {
+		std::vector<int> res(a);
+		Set<int> b(a);
+		size_t size = a.size();
+		for (size_t i = 0; i < size; i++) {
+
+		}
+		
 	}
 }
